@@ -3,5 +3,6 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-src/main/resources/application.properties
-src/main/resources/application-postg.properties
+../src/main/resources/application.properties
+../src/main/resources/application-postg.properties
+../.env

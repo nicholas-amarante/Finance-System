@@ -7,8 +7,8 @@ services:
     restart: always
 
     environment:
-      POSTGRES_USER: sa
-      POSTGRES_PASSWORD: postgre
+      POSTGRES_USER: ${postuser}
+      POSTGRES_PASSWORD: ${postpass}
       POSTGRES_DB: dockF
 
     ports:
