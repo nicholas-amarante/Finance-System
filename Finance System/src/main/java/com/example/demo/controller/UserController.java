@@ -40,7 +40,7 @@ public class UserController {
         return new ResponseEntity<>("Cliente autenticado com sucesso",HttpStatus.OK);
     }
 
-    @GetMapping("/test/administrator")
+    @GetMapping("/test/admin")
     public ResponseEntity<String> getAdminAuthenticationTest(){
         return new ResponseEntity<>("Admin autenticado com sucesso",HttpStatus.OK);
     }

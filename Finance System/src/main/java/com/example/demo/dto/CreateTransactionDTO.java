@@ -1,8 +1,10 @@
 package com.example.demo.dto;
 
+import java.math.BigDecimal;
+
 public record CreateTransactionDTO (
     String name,
-    float value,
+    BigDecimal value,
     String description
 )
 {}

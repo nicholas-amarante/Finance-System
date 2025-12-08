@@ -7,26 +7,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity(name="Transaction")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="transactions")
+@Table(name="finance_transaction")
 public class Transaction extends BaseModel{
     @NotBlank
     @Column(nullable = true)
     private String name;
-    @NotBlank
     @Column(nullable = true)
-    private float value;
+    private BigDecimal value;
     @NotBlank
     @Column(nullable = true)
     private String description;
 
     private LocalDate date;
-    @NotEmpty
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -39,8 +38,8 @@ public class Transaction extends BaseModel{
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
-    public float getValue() {return value;}
-    public void setValue(float value) {this.value = value;}
+    public BigDecimal getValue() {return value;}
+    public void setValue(BigDecimal value) {this.value = value;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
     public LocalDate getDate() {return date;}

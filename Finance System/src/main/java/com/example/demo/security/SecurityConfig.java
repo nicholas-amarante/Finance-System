@@ -42,7 +42,8 @@ public class SecurityConfig {
             "/api/user/test"
     };
     public static final String[] ENDPOINTS_CUSTOMER={
-            "/api/users/test/customer"
+            "/api/users/test/customer",
+            "/api/transactions/create",
     };
     public static final String[] ENDPOINTS_ADMIN={
             "/api/user/test/admin"
@@ -60,6 +61,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
             .requestMatchers(HttpMethod.OPTIONS).permitAll()
             .requestMatchers("/login").permitAll()
+            .requestMatchers("/h2-console/**").permitAll()
             .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
             .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
             .requestMatchers(ENDPOINTS_CUSTOMER).hasAuthority("CUSTOMER")
