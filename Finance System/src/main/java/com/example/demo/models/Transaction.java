@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity(name="Transaction")
 @Builder
@@ -25,6 +26,7 @@ public class Transaction extends BaseModel{
     @Column(nullable = true)
     private String description;
 
+    private LocalTime time;
     private LocalDate date;
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,4 +52,6 @@ public class Transaction extends BaseModel{
     public void setCartaoCredito(CreditCard cartaoCredito) {this.cartaoCredito = cartaoCredito;}
     public User getUser() {return user;}
     public void setUser(User user) {this.user = user;}
+    public LocalTime getTime() {return time;}
+    public void setTime(LocalTime time) {this.time = time;}
 }
