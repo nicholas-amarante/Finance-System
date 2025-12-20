@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.demo.models.UserDetailsImpl;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
@@ -18,11 +19,16 @@ public class JwtTokenService {
     public String generateToken(UserDetails user){
         try{
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+            String role=user.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .findFirst()
+                    .orElse("ROLE_CUSTOM");
             return JWT.create()
                     .withIssuer(ISSUER)
                     .withIssuedAt(creationDate())//Define o emissor do token
                     .withExpiresAt(expirationDate())//Define a data de expiração do token
                     .withSubject(user.getUsername())//Define assunto do token
+                    .withClaim("role",role)
                     .sign(algorithm);//Assina o token
         }catch(JWTCreationException e){
             throw new JWTCreationException("Erro ao gerar token.", e);

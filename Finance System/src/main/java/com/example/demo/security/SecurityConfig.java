@@ -33,17 +33,18 @@ public class SecurityConfig {
     private UserAuthenticationFilter userAuthenticationFilter;
 
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED={
-            "/api/user/login",
-            "/api/user/register",
-            "/api/user/logout",
+            "/api/users",
+            "/api/users/login",
+            "/api/users/logout",
             "/error"
     };
     public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED={
-            "/api/user/test"
+            "/api/user/test",
+            "/api/transactions",
+            "/api/banks"
     };
     public static final String[] ENDPOINTS_CUSTOMER={
-            "/api/users/test/customer",
-            "/api/transactions/create",
+            "/api/users/test/customer"
     };
     public static final String[] ENDPOINTS_ADMIN={
             "/api/user/test/admin"

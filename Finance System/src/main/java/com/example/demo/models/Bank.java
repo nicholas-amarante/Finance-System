@@ -1,13 +1,22 @@
 package com.example.demo.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name="banks")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Bank extends BaseModel {
     @NotBlank
-    @Column(nullable = false)
-    private String nome;
+    @Column(nullable = false, unique = true)
+    private String name;
 
-    public String getNome() {return nome;}
-    public void setNome(String nome) {this.nome = nome;}
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
 }

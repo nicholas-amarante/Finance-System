@@ -11,15 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/transaction")
+@RequestMapping("/api/transactions")
 public class TransactionController {
     @Autowired
-    TransactionService transactionService;
+    private TransactionService transactionService;
 
-    @Autowired
     public TransactionController(TransactionService transactionService) {this.transactionService = transactionService;}
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<Void> createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO){
         transactionService.createTransaction(createTransactionDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);

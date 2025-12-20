@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-
 import com.example.demo.dto.CreateTransactionDTO;
 import com.example.demo.models.Transaction;
 import com.example.demo.models.User;
@@ -12,9 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 public class TransactionService {
@@ -22,6 +19,9 @@ public class TransactionService {
     TransactionRepository transactionRepository;
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
 //    @Transactional
 //    public void createTransaction(CreateTransactionDTO createTransactionDTO) {
@@ -35,16 +35,7 @@ public class TransactionService {
 
     @Transactional
     public void createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO){
-        Object principal=SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userEmail;
-        if(principal instanceof UserDetails){
-            userEmail=((UserDetails) principal).getUsername();
-        }else{
-            userEmail=principal.toString();
-        }
-        System.out.println("UserEmail: "+userEmail);
-        User currentUser=userRepository.findByEmail(userEmail)
-                .orElseThrow(()->new RuntimeException("User not found on DB"));
+        User currentUser=authenticationService.getLoggedUser();
         Transaction transaction=new Transaction();
         transaction.setName(createTransactionDTO.name());
         transaction.setDescription(createTransactionDTO.description());

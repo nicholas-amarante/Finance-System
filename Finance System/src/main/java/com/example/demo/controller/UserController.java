@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
     UserService userService;
 
@@ -24,7 +24,7 @@ public class UserController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO createUserDTO) {
         userService.createUser(createUserDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
