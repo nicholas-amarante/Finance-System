@@ -1,20 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateTransactionDTO;
-import com.example.demo.models.Account;
-import com.example.demo.models.Transaction;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.TransactionRepository;
+import com.example.demo.repository.TransactionTypeRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
+import java.time.LocalDateTime;
 
 @Service
 public class TransactionService {
@@ -24,19 +21,10 @@ public class TransactionService {
     private UserRepository userRepository;
     @Autowired
     private AccountRepository accountRepository;
-
+    @Autowired
+    private TransactionTypeRepository transactionTypeRepository;
     @Autowired
     private AuthenticationService authenticationService;
-
-//    @Transactional
-//    public void createTransaction(CreateTransactionDTO createTransactionDTO) {
-//        Transaction newTransaction=Transaction.builder()
-//                .name(createTransactionDTO.name())
-//                .value(createTransactionDTO.value())
-//                .description(createTransactionDTO.description())
-//                .build();
-//        transactionRepository.save(newTransaction);
-//    }
 
     @Transactional
     public void createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO){
@@ -47,10 +35,15 @@ public class TransactionService {
         transaction.setName(createTransactionDTO.name());
         transaction.setDescription(createTransactionDTO.description());
         transaction.setValue(createTransactionDTO.value());
-        transaction.setDate(LocalDate.now());
+        if (createTransactionDTO.transactionType() == null) {
+            throw new IllegalArgumentException("O tipo de transação não pode ser nulo.");
+        }
+        TransactionTypeClass transactionTypeClass=transactionTypeRepository.findByName(createTransactionDTO.transactionType())
+                .orElseThrow(()->new RuntimeException("Erro critico! "+createTransactionDTO.transactionType()+" Type nao encontrado"));
+        transaction.setDateTime(LocalDateTime.now());
         transaction.setUser(currentUser);
         transaction.setAccount(account);
-        transaction.setTime(LocalTime.now());
+        transaction.setTransactionType(transactionTypeClass);
         transactionRepository.save(transaction);
     }
 

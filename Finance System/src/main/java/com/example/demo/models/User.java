@@ -37,6 +37,7 @@ public class User extends BaseModel{
         joinColumns = @JoinColumn(name="user_id"),
         inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Role> roles;
+    
     public String getName() {return name;}
     public String getEmail() {return email;}
     public String getCpf() {return cpf;}

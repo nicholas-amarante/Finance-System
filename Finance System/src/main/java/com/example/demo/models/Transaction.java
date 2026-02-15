@@ -2,14 +2,10 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity(name="Transaction")
 @Builder
@@ -17,41 +13,51 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Table(name="finance_transaction")
 public class Transaction extends BaseModel{
+    @Setter
     @NotBlank
     @Column(nullable = true)
     private String name;
+
+    @Setter
     @Column(nullable = true)
     private BigDecimal value;
+
+    @Setter
     @NotBlank
     @Column(nullable = true)
     private String description;
 
-    private LocalTime time;
-    private LocalDate date;
+    @Setter
+    @Column(nullable = true)
+    private LocalDateTime dateTime;
+
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @ManyToOne
-    @JoinColumn(name = "cartao_credito_id")
-    private CreditCard cartaoCredito;
+    @JoinColumn(name = "creditCard_id")
+    private CreditCard creditCard;
+
+    @Setter
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "transaction_type", nullable = false)
+    private TransactionTypeClass transactionType;
+
     public String getName() {return name;}
-    public void setName(String name) {this.name = name;}
     public BigDecimal getValue() {return value;}
-    public void setValue(BigDecimal value) {this.value = value;}
     public String getDescription() {return description;}
-    public void setDescription(String description) {this.description = description;}
-    public LocalDate getDate() {return date;}
-    public void setDate(LocalDate date) {this.date = date;}
+    public LocalDateTime getDateTime() {return dateTime;}
     public Account getAccount() {return account;}
-    public void setAccount(Account account_id) {this.account=account_id;}
-    public CreditCard getCartaoCredito() {return cartaoCredito;}
-    public void setCartaoCredito(CreditCard cartaoCredito) {this.cartaoCredito = cartaoCredito;}
+    public CreditCard getCreditCard() {return creditCard;}
+    public void setCreditCard(CreditCard creditCard) {this.creditCard = creditCard;}
     public User getUser() {return user;}
-    public void setUser(User user) {this.user = user;}
-    public LocalTime getTime() {return time;}
-    public void setTime(LocalTime time) {this.time = time;}
 }
