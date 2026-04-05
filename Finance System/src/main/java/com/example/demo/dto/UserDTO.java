@@ -5,17 +5,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class UserDTO {
-    @NotBlank(message="O nome completo é obrigatório.")
+    @NotBlank(message="O nome completo é obrigatório!")
     @Size(min=3, max=255)
     private String name;
-    @NotBlank(message="O email é obrigatório.")
-    @Email(message="O formato do email é inválido.")
+    @NotBlank(message="O email é obrigatório!")
+    @Email(message="O formato do email é inválido!")
     private String email;
-    @NotBlank(message="O CPF é obrigatório.")
+    @NotBlank(message="O CPF é obrigatório!")
     @Size(min=11, max=11)
     private String cpf;
-    @NotBlank(message="A senha é obrigatória.")
-    @Size(min=8, message="A senha deve ter no mínimo 8 caracteres.")
+    @NotBlank(message="A senha é obrigatória!")
+    @Size(min=8, message="A senha deve ter no mínimo 8 caracteres!")
     private String password;
 
     public String getName() {return name;}

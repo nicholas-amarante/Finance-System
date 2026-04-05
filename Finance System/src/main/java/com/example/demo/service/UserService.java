@@ -24,7 +24,6 @@ import java.util.Collections;
 
 @Service
 public class UserService {
-
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
@@ -37,17 +36,12 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public RecoveryJwtTokenDTO authenticateUser(LoginUserDTO loginUserDTO){
-//        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUserDTO.email(), loginUserDTO.password());
-//        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-//        return new RecoveryJwtTokenDTO(jwtTokenService.generateToken(userDetails));
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginUserDTO.email(),
                 loginUserDTO.password()
             )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String token=jwtTokenService.generateToken(userDetails);
@@ -67,8 +61,6 @@ public class UserService {
                 .password(passwordEncoder.encode(createUserDTO.password()))
                 .roles(Collections.singletonList(userRole))
                 .build();
-
-
     userRepository.save(newUser);
     }
 }

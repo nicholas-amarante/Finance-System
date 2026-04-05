@@ -3,7 +3,6 @@ package com.example.demo.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -51,6 +50,12 @@ public class Transaction extends BaseModel{
     @ManyToOne
     @JoinColumn(name = "transaction_type", nullable = false)
     private TransactionTypeClass transactionType;
+
+    @Getter
+    @Setter
+    @ManyToOne
+    @JoinColumn(name="category_transaction", nullable = false)
+    private Category category;
 
     public String getName() {return name;}
     public BigDecimal getValue() {return value;}

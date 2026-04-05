@@ -1,7 +1,6 @@
 package com.example.demo.dto;
 
-public record RecoveryJwtTokenDTO
-    (
+public record RecoveryJwtTokenDTO(
         String token
     )
 {}

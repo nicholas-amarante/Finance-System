@@ -9,9 +9,11 @@ import com.example.demo.repository.BankRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -28,7 +30,7 @@ public class AccountService {
     public void createAccount(@RequestBody CreateAccountDTO createAccountDTO) {
         User currentUser=authenticationService.getLoggedUser();
         Bank bank=bankRepository.findById(createAccountDTO.bank_id())
-                .orElseThrow(()->new RuntimeException("Bank unable to match ID: "+createAccountDTO.bank_id()));
+                .orElseThrow(()->new RuntimeException("Bank unable to match ID: "+ createAccountDTO.bank_id()));
         Account account = new Account();
         account.setUser(currentUser);
         account.setBank(bank);
@@ -37,4 +39,10 @@ public class AccountService {
         account.setAccountType(createAccountDTO.accountType());
         accountRepository.save(account);
     }
+
+    public List<Account> findByUser(){
+        User currentUser=authenticationService.getLoggedUser();
+        return accountRepository.findByUser(currentUser);
+    }
+    
 }
