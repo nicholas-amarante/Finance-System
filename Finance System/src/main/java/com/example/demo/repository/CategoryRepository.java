@@ -12,8 +12,10 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Long> {
 
-    @Query("SELECT c FROM Category c WHERE c.createdBy IS NULL OR c.createdBy.id=:user")
+    @Query("SELECT c FROM Category c WHERE c.user IS NULL OR c.user.id=:user")
     List<Category> findAvailableCategoriesForUser(@Param("user") User user);
     
     Optional<Category> findByName(String name);
+
+    List<Category> findAllByUser(User user);
 }

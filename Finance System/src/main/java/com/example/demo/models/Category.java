@@ -19,6 +19,6 @@ public class Category extends BaseModel{
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name="user_category",  nullable = false)
-    private User createdBy;
+    @JoinColumn(name="user_category",  nullable = true)
+    private User user;
 }

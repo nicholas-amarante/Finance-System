@@ -22,7 +22,6 @@ public class Transaction extends BaseModel{
     private BigDecimal value;
 
     @Setter
-    @NotBlank
     @Column(nullable = true)
     private String description;
 

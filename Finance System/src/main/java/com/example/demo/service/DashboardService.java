@@ -30,9 +30,9 @@ public class DashboardService {
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
         LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(LocalTime.MAX);
         TransactionTypeClass transactionTypeClassIncome=transactionTypeRepository.findByName(TransactionType.INCOME)
-                .orElseThrow(()->new RuntimeException("Critical error! Income type not found"));
+                .orElseThrow(()->new RuntimeException("Tipo INCOME não encontrado!"));
         TransactionTypeClass transactionTypeClassExpense=transactionTypeRepository.findByName(TransactionType.EXPENSE)
-                .orElseThrow(()->new RuntimeException("Critical error! Expense type not found"));
+                .orElseThrow(()->new RuntimeException("Tio EXPENSE não encontrado!"));
 
         BigDecimal income=transactionRepository.getSumByUserAndDateAndType(user, startDate, endDate, transactionTypeClassIncome);
         if(income==null){income=BigDecimal.ZERO;}
