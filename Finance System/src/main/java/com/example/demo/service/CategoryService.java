@@ -29,6 +29,6 @@ public class CategoryService {
 
     public List<Category> findByUser(){
         User currentUser=authenticationService.getLoggedUser();
-        return categoryRepository.findAllByUser(currentUser);
+        return categoryRepository.findAvailableCategoriesForUser(currentUser.getId());
     }
 }

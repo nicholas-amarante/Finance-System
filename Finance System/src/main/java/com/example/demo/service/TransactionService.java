@@ -44,9 +44,16 @@ public class TransactionService {
         transaction.setAccount(account);
         transaction.setTransactionType(transactionTypeClass);
         Category category=categoryRepository.findByName(createTransactionDTO.category())
-                .orElseThrow(()->new RuntimeException("Category nao encontrado "+createTransactionDTO.category()));
+                .orElseThrow(()->new RuntimeException("Category não encontrado "+createTransactionDTO.category()));
         transaction.setCategory(category);
         transactionRepository.save(transaction);
+
+        if(createTransactionDTO.transactionType().equals(TransactionType.INCOME)){
+            account.setCurrentBalance(account.getCurrentBalance().add(transaction.getValue()));
+        }else{
+            account.setCurrentBalance(account.getCurrentBalance().subtract(transaction.getValue()));
+        }
+        accountRepository.save(account);
     }
 
 }

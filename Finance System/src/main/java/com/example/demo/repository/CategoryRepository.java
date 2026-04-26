@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category,Long> {
 
     @Query("SELECT c FROM Category c WHERE c.user IS NULL OR c.user.id=:user")
-    List<Category> findAvailableCategoriesForUser(@Param("user") User user);
+    List<Category> findAvailableCategoriesForUser(@Param("user") Long user);
     
     Optional<Category> findByName(String name);
 

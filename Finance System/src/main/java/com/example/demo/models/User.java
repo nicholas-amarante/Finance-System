@@ -32,7 +32,7 @@ public class User extends BaseModel{
     private String password;
     @NotEmpty
     @Column(nullable = false)
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="users_roles",
         joinColumns = @JoinColumn(name="user_id"),
         inverseJoinColumns = @JoinColumn(name="role_id"))
