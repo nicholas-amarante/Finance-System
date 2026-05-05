@@ -7,11 +7,13 @@ import com.example.demo.repository.TransactionTypeRepository;
 import com.example.demo.models.User;
 import com.example.demo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.util.List;
 
 @Service
 public class DashboardService {
@@ -24,7 +26,7 @@ public class DashboardService {
     @Autowired
     private TransactionTypeRepository transactionTypeRepository;
 
-    public DashboardDTO getMonthlySummary(int month, int year){
+    public DashboardDTO.CalculateIncomeAndExpenseResponseByMonth getMonthlySummary(int month, int year){
         User user=authenticationService.getLoggedUser();
         YearMonth yearMonth = YearMonth.of(year, month);
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
@@ -39,7 +41,12 @@ public class DashboardService {
         BigDecimal expense=transactionRepository.getSumByUserAndDateAndType(user, startDate, endDate, transactionTypeClassExpense);
         if(expense==null){expense=BigDecimal.ZERO;}
         BigDecimal balance=income.subtract(expense);
-        return new DashboardDTO(income, expense, balance);
+        return new DashboardDTO.CalculateIncomeAndExpenseResponseByMonth(income, expense, balance);
+    }
+
+    public List<DashboardDTO.CalculateIncomeAndExpenseResponseByCategorys> getExpensesByCategorys(){
+        User user=authenticationService.getLoggedUser();
+        return transactionRepository.getExpensesByCategory(user);
     }
 }
 

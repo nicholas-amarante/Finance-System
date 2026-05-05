@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.CreateTransactionDTO;
+import com.example.demo.dto.DashboardDTO;
+import com.example.demo.dto.TransactionDTO;
 import com.example.demo.models.*;
 import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.CategoryRepository;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class TransactionService {
