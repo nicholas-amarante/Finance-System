@@ -7,11 +7,13 @@ import com.example.demo.repository.TransactionTypeRepository;
 import com.example.demo.models.User;
 import com.example.demo.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class DashboardService {
     @Autowired
     private TransactionTypeRepository transactionTypeRepository;
 
-    public DashboardDTO.CalculateIncomeAndExpenseResponseByMonth getMonthlySummary(int month, int year){
+    public DashboardDTO.CalculateIncomeAndExpenseByMonthResponse getMonthlySummary(int month, int year){
         User user=authenticationService.getLoggedUser();
         YearMonth yearMonth = YearMonth.of(year, month);
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay();
@@ -41,12 +43,29 @@ public class DashboardService {
         BigDecimal expense=transactionRepository.getSumByUserAndDateAndType(user, startDate, endDate, transactionTypeClassExpense);
         if(expense==null){expense=BigDecimal.ZERO;}
         BigDecimal balance=income.subtract(expense);
-        return new DashboardDTO.CalculateIncomeAndExpenseResponseByMonth(income, expense, balance);
+        return new DashboardDTO.CalculateIncomeAndExpenseByMonthResponse(income, expense, balance);
     }
 
-    public List<DashboardDTO.CalculateIncomeAndExpenseResponseByCategorys> getExpensesByCategorys(){
+    public List<DashboardDTO.CalculateIncomeAndExpenseByCategorysResponse> getExpensesByCategorys(Integer month, Integer year){
+        YearMonth yearmonth;
         User user=authenticationService.getLoggedUser();
-        return transactionRepository.getExpensesByCategory(user);
+        int finalYear=(year==null)?YearMonth.now().getYear() : year;
+
+        if (month != null) {
+            yearmonth = YearMonth.of(finalYear, month);
+        } else {
+            yearmonth = YearMonth.now();
+        }
+        LocalDateTime startDate = yearmonth.atDay(1).atStartOfDay();
+        LocalDateTime endDate = yearmonth.atEndOfMonth().atTime(LocalTime.MAX);
+
+        return transactionRepository.getExpensesByCategory(user, startDate, endDate);
+    }
+
+    public List<DashboardDTO.CalculateIncomeAndExpenseByPeriodsResponse> fetchLastTenTransactions(){
+        User user=authenticationService.getLoggedUser();
+        Pageable pageable = PageRequest.of(0, 10);
+        return transactionRepository.getLastTenTransactions(user, pageable);
     }
 }
 

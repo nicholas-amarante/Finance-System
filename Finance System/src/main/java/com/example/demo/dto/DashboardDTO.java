@@ -1,30 +1,30 @@
 package com.example.demo.dto;
 
 import com.example.demo.models.TransactionType;
-import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public interface DashboardDTO{
 
-        record CalculateIncomeAndExpenseResponseByMonth(
-                @NotNull(message = "Total de receitas não pode ser nulo!")
+        record CalculateIncomeAndExpenseByMonthResponse(
                 BigDecimal totalIncome,
-                @NotNull(message = "Total de despesas não pode ser nulo!")
                 BigDecimal totalExpense,
-                @NotNull(message = "Saldo não pode ser nulo!")
                 BigDecimal balance
         ){}
 
-        record CalculateIncomeAndExpenseResponseByCategorys(
+        record CalculateIncomeAndExpenseByCategorysResponse(
                 String categoryName,
                 BigDecimal totalAmount
         ){}
 
-        record CalculateIncomeAndExpenseByPeriods(
-                Integer year,
-                Integer month,
+        record CalculateIncomeAndExpenseByPeriodsResponse(
+                Long id,
+                String name,
+                String description,
+                BigDecimal value,
+                String categoryName,
                 TransactionType transactionType,
-                BigDecimal totalAmount
+                LocalDateTime dateTime
         ){}
 }
