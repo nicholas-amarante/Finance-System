@@ -27,6 +27,10 @@ public class User extends BaseModel{
     @Column(nullable = true)
     private String cpf;
     @Setter
+    //@NotBlank
+    //@Column(nullable=false)
+    private String birthday;
+    @Setter
     @NotBlank
     @Column(nullable = false)
     private String password;

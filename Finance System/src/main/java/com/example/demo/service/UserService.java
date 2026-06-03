@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dto.CreateUserDTO;
 import com.example.demo.dto.LoginUserDTO;
 import com.example.demo.dto.RecoveryJwtTokenDTO;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.models.Role;
 import com.example.demo.models.RoleName;
 import com.example.demo.models.User;
@@ -34,6 +35,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     public RecoveryJwtTokenDTO authenticateUser(LoginUserDTO loginUserDTO){
         Authentication authentication = authenticationManager.authenticate(
@@ -49,7 +52,7 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(CreateUserDTO createUserDTO){
+    public void createUser(UserDTO.CreateUser createUserDTO){
 //        RoleName roleNameFromDTO=createUserDTO.role();
         RoleName roleNameFromDTO=RoleName.getRoleCustom();
         Role userRole=roleRepository.findByName(roleNameFromDTO)
@@ -62,5 +65,21 @@ public class UserService {
                 .roles(Collections.singletonList(userRole))
                 .build();
     userRepository.save(newUser);
+    }
+
+    @Transactional
+    public UserDTO.DisplayProfileData getDataProfile(){
+        User user=authenticationService.getLoggedUser();
+        return new UserDTO.DisplayProfileData(user.getName(), user.getEmail(), user.getCpf(), user.getBirthday());
+    }
+
+    @Transactional
+    public void updateProfileData(UserDTO.UpdateUser updateUser){
+        User user=authenticationService.getLoggedUser();
+        user.setName(updateUser.name());
+        user.setEmail(updateUser.email());
+        user.setCpf(user.getCpf());
+        user.setBirthday(updateUser.birthday());
+        userRepository.save(user);
     }
 }

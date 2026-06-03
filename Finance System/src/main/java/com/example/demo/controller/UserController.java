@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.CreateUserDTO;
 import com.example.demo.dto.LoginUserDTO;
 import com.example.demo.dto.RecoveryJwtTokenDTO;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +26,21 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<Void> createUser(@RequestBody UserDTO.CreateUser createUserDTO) {
         userService.createUser(createUserDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO.DisplayProfileData> getDataProfile(){
+        UserDTO.DisplayProfileData data=userService.getDataProfile();
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Void> updateProfileData(@RequestBody UserDTO.UpdateUser updateUser){
+        userService.updateProfileData(updateUser);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/test")
