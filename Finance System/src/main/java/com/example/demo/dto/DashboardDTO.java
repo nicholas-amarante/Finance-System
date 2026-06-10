@@ -10,7 +10,8 @@ public interface DashboardDTO{
         record CalculateIncomeAndExpenseByMonthResponse(
                 BigDecimal totalIncome,
                 BigDecimal totalExpense,
-                BigDecimal balance
+                BigDecimal balance,
+                BigDecimal totalCurrentBalance
         ){}
 
         record CalculateIncomeAndExpenseByCategorysResponse(

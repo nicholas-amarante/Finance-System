@@ -3,9 +3,11 @@ package com.example.demo.service;
 import com.example.demo.dto.DashboardDTO;
 import com.example.demo.models.TransactionType;
 import com.example.demo.models.TransactionTypeClass;
+import com.example.demo.repository.AccountRepository;
 import com.example.demo.repository.TransactionTypeRepository;
 import com.example.demo.models.User;
 import com.example.demo.repository.TransactionRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +23,12 @@ import java.util.List;
 public class DashboardService {
     @Autowired
     private TransactionRepository transactionRepository;
-
     @Autowired
     private AuthenticationService authenticationService;
-
     @Autowired
     private TransactionTypeRepository transactionTypeRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     public DashboardDTO.CalculateIncomeAndExpenseByMonthResponse getMonthlySummary(int month, int year){
         User user=authenticationService.getLoggedUser();
@@ -36,14 +38,15 @@ public class DashboardService {
         TransactionTypeClass transactionTypeClassIncome=transactionTypeRepository.findByName(TransactionType.INCOME)
                 .orElseThrow(()->new RuntimeException("Tipo INCOME não encontrado!"));
         TransactionTypeClass transactionTypeClassExpense=transactionTypeRepository.findByName(TransactionType.EXPENSE)
-                .orElseThrow(()->new RuntimeException("Tio EXPENSE não encontrado!"));
+                .orElseThrow(()->new RuntimeException("Tipo EXPENSE não encontrado!"));
 
         BigDecimal income=transactionRepository.getSumByUserAndDateAndType(user, startDate, endDate, transactionTypeClassIncome);
         if(income==null){income=BigDecimal.ZERO;}
         BigDecimal expense=transactionRepository.getSumByUserAndDateAndType(user, startDate, endDate, transactionTypeClassExpense);
         if(expense==null){expense=BigDecimal.ZERO;}
         BigDecimal balance=income.subtract(expense);
-        return new DashboardDTO.CalculateIncomeAndExpenseByMonthResponse(income, expense, balance);
+        BigDecimal totalCurrentBalance=accountRepository.getTotalCurrentBalanceByUser(user);
+        return new DashboardDTO.CalculateIncomeAndExpenseByMonthResponse(income, expense, balance, totalCurrentBalance);
     }
 
     public List<DashboardDTO.CalculateIncomeAndExpenseByCategorysResponse> getExpensesByCategorys(Integer month, Integer year){
