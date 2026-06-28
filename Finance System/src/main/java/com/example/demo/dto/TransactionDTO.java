@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public interface TransactionDTO{
 
@@ -20,5 +21,15 @@ public interface TransactionDTO{
             TransactionType transactionType,
             @NotBlank(message = "Uma categoria deve ser definida para a transação!")
             String category
+    ){}
+
+    record TransactionFeed(
+            Long id,
+            String name,
+            String description,
+            BigDecimal value,
+            String categoryName,
+            TransactionType transactionType,
+            LocalDateTime dateTime
     ){}
 }
