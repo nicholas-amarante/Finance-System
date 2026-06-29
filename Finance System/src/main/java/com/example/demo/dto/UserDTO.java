@@ -4,13 +4,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
+
 public interface UserDTO {
 
     record DisplayProfileData(
             String name,
             String email,
             String cpf,
-            String birthday
+            LocalDate birthday
     ){}
 
     record CreateUser(
@@ -25,7 +27,7 @@ public interface UserDTO {
             String cpf,
             @NotBlank(message = "A data de nascimento é obrigatória!")
             @Size(min=10, max=10)
-            String birthday,
+            LocalDate birthday,
             @NotBlank(message = "A senha é obrigatório!")
             @Size(min=8, message = "A senha deve ter no mínimo 8 caracteres!")
             String password
@@ -35,6 +37,6 @@ public interface UserDTO {
             String name,
             String email,
             String cpf,
-            String birthday
+            LocalDate birthday
     ){}
 }

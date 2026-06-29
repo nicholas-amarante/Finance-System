@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.CreateTransactionDTO;
-import com.example.demo.dto.DashboardDTO;
 import com.example.demo.dto.PagedDTO;
 import com.example.demo.dto.TransactionDTO;
 import com.example.demo.models.*;
@@ -34,7 +32,7 @@ public class TransactionService {
     private CategoryRepository categoryRepository;
 
     @Transactional
-    public void createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO){
+    public TransactionDTO.CreateTransactionDTO createTransaction(@RequestBody TransactionDTO.CreateTransactionDTO createTransactionDTO){
         User currentUser=authenticationService.getLoggedUser();
         Transaction transaction=new Transaction();
         Account account=accountRepository.findById(createTransactionDTO.account_id())
@@ -62,6 +60,7 @@ public class TransactionService {
             account.setCurrentBalance(account.getCurrentBalance().subtract(transaction.getValue()));
         }
         accountRepository.save(account);
+        return createTransactionDTO;
     }
 
     public PagedDTO.PagedResponse<TransactionDTO.TransactionFeed> getFilteredTransaction(User loggedUser, String description, String type, Long accountId, LocalDateTime startDate, LocalDateTime endDate, int pageNumber, int pageSize){
@@ -74,7 +73,7 @@ public class TransactionService {
         );
         Page<Transaction> transactionPage=transactionRepository.findAll(spec, pageable);
         List<TransactionDTO.TransactionFeed> dtoList=transactionPage.getContent().stream()
-                .map(t-> new TransactionDTO.TransactionFeed(t.getId(), t.getName(), t.getDescription(), t.getValue(), t.getCategory().getName(), t.getTransactionType().getName(), t.getDateTime()))
+                .map(t-> new TransactionDTO.TransactionFeed(t.getId(), t.getName(), t.getDescription(), t.getValue(), t.getCategory().getName(), t.getTransactionType().getName(), t.getDateTime(), t.getAccount().getBank()))
                 .toList();
 
         return new PagedDTO.PagedResponse<>(dtoList, transactionPage.getNumber(), transactionPage.getSize(), transactionPage.getTotalElements(), transactionPage.getTotalPages(), transactionPage.isLast());

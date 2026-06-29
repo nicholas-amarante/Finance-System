@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -29,7 +30,7 @@ public class User extends BaseModel{
     @Setter
     //@NotBlank
     //@Column(nullable=false)
-    private String birthday;
+    private LocalDate birthday;
     @Setter
     @NotBlank
     @Column(nullable = false)
@@ -47,5 +48,6 @@ public class User extends BaseModel{
     public String getCpf() {return cpf;}
     public String getPassword() {return password;}
     public List<Role> getRoles() {return roles;}
+    public LocalDate getBirthday() {return birthday;}
     public void setRoles(@NotBlank List<Role> roles) {this.roles = roles;}
 }

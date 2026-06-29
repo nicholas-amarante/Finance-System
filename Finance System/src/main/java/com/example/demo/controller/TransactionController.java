@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CreateTransactionDTO;
-import com.example.demo.dto.DashboardDTO;
 import com.example.demo.dto.PagedDTO;
 import com.example.demo.dto.TransactionDTO;
 import com.example.demo.models.User;
@@ -14,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -25,7 +22,7 @@ public class TransactionController {
     public TransactionController(TransactionService transactionService) {this.transactionService = transactionService;}
 
     @PostMapping()
-    public ResponseEntity<Void> createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO){
+    public ResponseEntity<Void> createTransaction(@RequestBody TransactionDTO.CreateTransactionDTO createTransactionDTO){
         transactionService.createTransaction(createTransactionDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
