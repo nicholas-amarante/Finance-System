@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.example.demo.models.*;
 import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
+import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +12,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class DatabaseSeeder implements CommandLineRunner {
+
+    Faker faker=new Faker();
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -31,6 +37,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     private TransactionRepository transactionRepository;
     @Autowired
     private TransactionTypeRepository transactionTypeRepository;
+    @Autowired
+    private TransactionTypeRepository transactionTypeClassRepository;
 
     @Override
     @Transactional
@@ -144,6 +152,51 @@ public class DatabaseSeeder implements CommandLineRunner {
             transaction02=criarTransacao("Remédio", 125, 2L, 4L, 2L, 5L);
             transactionRepository.saveAll(Arrays.asList(transaction01, transaction02));
         }
+
+        var users=userRepository.findAll();
+        var accounts=accountRepository.findAll();
+        var categories=categoryRepository.findAll();
+        var names=transactionRepository.findAll();
+
+        if(users.isEmpty()||accounts.isEmpty()||categories.isEmpty()){
+            System.out.println("Sem dados Banco...");
+            return;
+        }
+
+        List<Transaction> randomTransactions=new ArrayList<>();
+        int totalTransactions=150;
+
+        System.out.println("Generating random transactions...");
+        var typeClass=transactionTypeClassRepository.findAll();
+        for (int i = 0; i < totalTransactions; i++) {
+            Transaction t=new Transaction();
+            var selectedUser=users.get(faker.random().nextInt(users.size()));
+            var selectedAccount=accounts.get(faker.random().nextInt(accounts.size()));
+            var selectedCategory=categories.get(faker.random().nextInt(categories.size()));
+            var selectedTypeClass=typeClass.get(faker.random().nextInt(typeClass.size()));
+            //Sortea 50%
+            TransactionType selectedType=faker.bool().bool()?TransactionType.INCOME:TransactionType.EXPENSE;
+
+            String name = faker.commerce().productName();
+            String description = "Referente a compra de " + faker.commerce().department().toLowerCase();
+            double doubleValue=faker.number().randomDouble(2, 5, 1500);
+            BigDecimal value=BigDecimal.valueOf(doubleValue);
+            long daysGone=faker.number().numberBetween(0, 180);
+            LocalDateTime dateTime=LocalDateTime.now().minusDays(daysGone);
+
+            t.setName(name);
+            t.setDescription(description);
+            t.setValue(value);
+            t.setDateTime(dateTime);
+            t.setTransactionType(selectedTypeClass);
+            t.setUser(selectedUser);
+            t.setAccount(selectedAccount);
+            t.setCategory(selectedCategory);
+
+            randomTransactions.add(t);
+        }
+        transactionRepository.saveAll(randomTransactions);
+
     }
 
     private Transaction criarTransacao(String name, double value, Long userId, Long accountId, Long typeId, Long categoryId) {
