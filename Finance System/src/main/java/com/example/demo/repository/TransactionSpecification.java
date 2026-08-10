@@ -21,6 +21,11 @@ public class TransactionSpecification {
                 criteriaBuilder.equal(root.get("transactionType").get("name"), typeName);
     }
 
+    public static Specification<Transaction> hashCategory(String categoryName){
+        return (root, query, criteriaBuilder) -> categoryName==null||categoryName.isBlank()?null:
+                criteriaBuilder.equal(root.get("category").get("name"), categoryName);
+    }
+
     public static Specification<Transaction> hashAccount(Long accountId){
         return (root, query, criteriaBuilder) -> accountId==null?null:
                 criteriaBuilder.equal(root.get("account").get("id"), accountId);

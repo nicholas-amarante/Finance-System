@@ -33,12 +33,13 @@ public class TransactionController {
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Long accountId,
+            @RequestParam(required = false) String category,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var response=transactionService.getFilteredTransaction(loggedUser, description, type, accountId, startDate, endDate, page, size);
+        var response=transactionService.getFilteredTransaction(loggedUser, description, type, category, accountId, startDate, endDate, page, size);
         return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.models.Bank;
 import com.example.demo.models.TransactionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,9 +28,9 @@ public interface TransactionDTO{
             String name,
             String description,
             BigDecimal value,
-            String categoryName,
+            String category,
             TransactionType transactionType,
             LocalDateTime dateTime,
-            Bank bank
+            String bank
     ){}
 }

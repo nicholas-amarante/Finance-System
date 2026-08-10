@@ -63,17 +63,18 @@ public class TransactionService {
         return createTransactionDTO;
     }
 
-    public PagedDTO.PagedResponse<TransactionDTO.TransactionFeed> getFilteredTransaction(User loggedUser, String description, String type, Long accountId, LocalDateTime startDate, LocalDateTime endDate, int pageNumber, int pageSize){
+    public PagedDTO.PagedResponse<TransactionDTO.TransactionFeed> getFilteredTransaction(User loggedUser, String description, String type, String category, Long accountId, LocalDateTime startDate, LocalDateTime endDate, int pageNumber, int pageSize){
         Pageable pageable= PageRequest.of(pageNumber, pageSize, Sort.by("dateTime").descending());
         Specification<Transaction> spec=allOf(
                 TransactionSpecification.hashDescription(description),
                 TransactionSpecification.hashAccount(accountId),
                 TransactionSpecification.hashType(type),
+                TransactionSpecification.hashCategory(category),
                 TransactionSpecification.isBetweenDates(startDate, endDate)
         );
         Page<Transaction> transactionPage=transactionRepository.findAll(spec, pageable);
         List<TransactionDTO.TransactionFeed> dtoList=transactionPage.getContent().stream()
-                .map(t-> new TransactionDTO.TransactionFeed(t.getId(), t.getName(), t.getDescription(), t.getValue(), t.getCategory().getName(), t.getTransactionType().getName(), t.getDateTime(), t.getAccount().getBank()))
+                .map(t-> new TransactionDTO.TransactionFeed(t.getId(), t.getName(), t.getDescription(), t.getValue(), t.getCategory().getName(), t.getTransactionType().getName(), t.getDateTime(), t.getAccount().getBank().getName()))
                 .toList();
 
         return new PagedDTO.PagedResponse<>(dtoList, transactionPage.getNumber(), transactionPage.getSize(), transactionPage.getTotalElements(), transactionPage.getTotalPages(), transactionPage.isLast());
