@@ -6,7 +6,9 @@ import jakarta.transaction.Transactional;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
+@Profile("postg")
 public class DatabaseSeeder implements CommandLineRunner {
 
     Faker faker=new Faker();
