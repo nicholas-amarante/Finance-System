@@ -4,6 +4,7 @@ import com.example.demo.dto.PagedDTO;
 import com.example.demo.dto.TransactionDTO;
 import com.example.demo.models.*;
 import com.example.demo.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,35 +33,36 @@ public class TransactionService {
     private CategoryRepository categoryRepository;
 
     @Transactional
-    public TransactionDTO.CreateTransactionDTO createTransaction(@RequestBody TransactionDTO.CreateTransactionDTO createTransactionDTO){
+    public TransactionDTO.ResponseTransactionDTO createTransaction(@RequestBody TransactionDTO.CreateTransactionDTO createTransactionDTO){
         User currentUser=authenticationService.getLoggedUser();
+        Account account=accountRepository.findByIdAndUser(createTransactionDTO.account_id(), currentUser)
+                        .orElseThrow(()->new EntityNotFoundException("Conta não encontrada ou não pertence ao usuário"));
+        TransactionTypeClass transactionTypeClass=transactionTypeRepository.findByName(createTransactionDTO.transactionType())
+                .orElseThrow(()-> new EntityNotFoundException("Tipo de transação não encontrado: "+createTransactionDTO.transactionType()));
+        Category category=categoryRepository.findByNameAndUserOrNameAndUserIsNull(createTransactionDTO.category(), currentUser, createTransactionDTO.category())
+                .orElseThrow(()->new EntityNotFoundException("Categoria não encontrada: "+createTransactionDTO.category()));
+        LocalDateTime transactionDateTime=createTransactionDTO.dateTime()!=null
+                ?createTransactionDTO.dateTime()
+                :LocalDateTime.now();
+
         Transaction transaction=new Transaction();
-        Account account=accountRepository.findById(createTransactionDTO.account_id())
-                        .orElseThrow(()->new RuntimeException("Account unable to match ID: "+createTransactionDTO.account_id()));
         transaction.setName(createTransactionDTO.name());
         transaction.setDescription(createTransactionDTO.description());
         transaction.setValue(createTransactionDTO.value());
-        if (createTransactionDTO.transactionType() == null) {
-            throw new IllegalArgumentException("O tipo de transação não pode ser nulo.");
-        }
-        TransactionTypeClass transactionTypeClass=transactionTypeRepository.findByName(createTransactionDTO.transactionType())
-                .orElseThrow(()->new RuntimeException("Erro critico! "+createTransactionDTO.transactionType()+" Type nao encontrado"));
-        transaction.setDateTime(LocalDateTime.now());
+        transaction.setDateTime(transactionDateTime);
         transaction.setUser(currentUser);
         transaction.setAccount(account);
         transaction.setTransactionType(transactionTypeClass);
-        Category category=categoryRepository.findByName(createTransactionDTO.category())
-                .orElseThrow(()->new RuntimeException("Category não encontrado "+createTransactionDTO.category()));
         transaction.setCategory(category);
         transactionRepository.save(transaction);
 
-        if(createTransactionDTO.transactionType().equals(TransactionType.INCOME)){
+        if(TransactionType.INCOME.equals(createTransactionDTO.transactionType())){
             account.setCurrentBalance(account.getCurrentBalance().add(transaction.getValue()));
         }else{
             account.setCurrentBalance(account.getCurrentBalance().subtract(transaction.getValue()));
         }
         accountRepository.save(account);
-        return createTransactionDTO;
+        return TransactionDTO.ResponseTransactionDTO.fromEntity(transaction);
     }
 
     public PagedDTO.PagedResponse<TransactionDTO.TransactionFeed> getFilteredTransaction(User loggedUser, String description, String type, String category, Long accountId, LocalDateTime startDate, LocalDateTime endDate, int pageNumber, int pageSize){
@@ -76,6 +78,8 @@ public class TransactionService {
         List<TransactionDTO.TransactionFeed> dtoList=transactionPage.getContent().stream()
                 .map(t-> new TransactionDTO.TransactionFeed(t.getId(), t.getName(), t.getDescription(), t.getValue(), t.getCategory().getName(), t.getTransactionType().getName(), t.getDateTime(), t.getAccount().getBank().getName()))
                 .toList();
+
+
 
         return new PagedDTO.PagedResponse<>(dtoList, transactionPage.getNumber(), transactionPage.getSize(), transactionPage.getTotalElements(), transactionPage.getTotalPages(), transactionPage.isLast());
     }

@@ -6,7 +6,9 @@ import jakarta.transaction.Transactional;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
@@ -17,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
+@Profile("postg")
 public class DatabaseSeeder implements CommandLineRunner {
 
     Faker faker=new Faker();
@@ -57,9 +60,15 @@ public class DatabaseSeeder implements CommandLineRunner {
             cat05.setName("Saúde");
             Category cat06=new Category();
             cat06.setName("Educação");
+            Category cat08=new Category();
+            cat08.setName("Salário");
+            Category cat09=new Category();
+            cat09.setName("Rendimentos");
+            Category cat10=new Category();
+            cat10.setName("Freelance");
             Category cat07=new Category();
             cat07.setName("Outros");
-            categoryRepository.saveAll(Arrays.asList(cat01,cat02,cat03,cat04,cat05,cat06,cat07));
+            categoryRepository.saveAll(Arrays.asList(cat01,cat02,cat03,cat04,cat05,cat06,cat07, cat08,cat09,cat10));
             System.out.println("Categorias Preenchidas com sucesso!");
         }
         if (roleRepository.count() == 0) {
