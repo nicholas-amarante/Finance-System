@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+.env
+*.log
+hs_err_pid*
+backup.sql
+/src/main/resources/application-personal.properties
